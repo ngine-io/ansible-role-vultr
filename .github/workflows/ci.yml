@@ -1,0 +1,39 @@
+---
+name: CI
+"on":
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+defaults:
+  run:
+    working-directory: "ngine_io.vultr_cloud"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v3
+        with:
+          path: "ngine_io.vultr_cloud"
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+
+      - name: Install test dependencies.
+        run: pip3 install yamllint ansible ansible-lint
+
+      - name: Lint code.
+        run: |
+          yamllint .
+
+      - name: Lint code.
+        run: |
+          ansible-lint .

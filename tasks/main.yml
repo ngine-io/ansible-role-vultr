@@ -1,0 +1,94 @@
+---
+- name: Handle firewalling
+  ansible.builtin.include_tasks: firewall.yml
+  run_once: true
+  with_items: "{{ vultr__firewall_groups }}"
+  loop_control:
+    label: "{{ firewall_group.name }}"
+    loop_var: firewall_group
+
+- name: Handle VPCs
+  vultr.cloud.vpc:
+    description: "{{ vpc.name }}"
+    v4_subnet: "{{ vpc.cidr.split('/')[0] }}"
+    v4_subnet_mask: "{{ vpc.cidr.split('/')[1] }}"
+    region: "{{ vpc.region | default(vultr__region) }}"
+    state: "{{ vpc.state | default(omit) }}"
+    api_key: "{{ vultr__api_key }}"
+    api_retries: "{{ vultr__api_retries }}"
+    api_retry_max_delay: "{{ vultr__api_retry_max_delay }}"
+    api_timeout: "{{ vultr__api_timeout }}"
+  run_once: true
+  with_items: "{{ vultr__vpcs }}"
+  loop_control:
+    label: "{{ vpc.name }}"
+    loop_var: vpc
+
+- name: Handle SSH keys
+  vultr.cloud.ssh_key:
+    name: "{{ ssh_key.name }}"
+    ssh_key: "{{ ssh_key.pubkey }}"
+    state: "{{ ssh_key.state | default(omit) }}"
+    api_key: "{{ vultr__api_key }}"
+    api_retries: "{{ vultr__api_retries }}"
+    api_retry_max_delay: "{{ vultr__api_retry_max_delay }}"
+    api_timeout: "{{ vultr__api_timeout }}"
+  run_once: true
+  with_items: "{{ vultr__ssh_keys }}"
+  loop_control:
+    label: "{{ ssh_key.name }}"
+    loop_var: ssh_key
+
+- name: Handle instance
+  vultr.cloud.instance:
+    label: "{{ vultr__instance_name }}"
+    hostname: "{{ vultr__instance_hostname }}"
+    user_data: "{{ vultr__instance_user_data }}"
+    firewall_group: "{{ vultr__instance_firewall_group }}"
+    plan: "{{ vultr__instance_plan }}"
+    ddos_protection: "{{ vultr__instance_ddos_protection }}"
+    backups: "{{ vultr__instance_backups }}"
+    enable_ipv6: "{{ vultr__instance_enable_ipv6 }}"
+    ssh_keys: "{{ vultr__instance_ssh_keys }}"
+    tags: "{{ vultr__instance_tags }}"
+    region: "{{ vultr__instance_region }}"
+    os: "{{ vultr__instance_os }}"
+    image: "{{ vultr__instance_image }}"
+    app: "{{ vultr__instance_app }}"
+    vpcs: "{{ vultr__instance_vpcs }}"
+    state: "{{ vultr__instance_state }}"
+    api_key: "{{ vultr__api_key }}"
+    api_retries: "{{ vultr__api_retries }}"
+    api_retry_max_delay: "{{ vultr__api_retry_max_delay }}"
+    api_timeout: "{{ vultr__api_timeout }}"
+  register: res
+
+- name: Print instance infos
+  debug:
+    var: res
+
+- name: Assing public IP to ansible_host
+  ansible.builtin.set_fact:
+    ansible_host: "{{ res.vultr_instance.main_ip }}"
+  when: res.vultr_instance.main_ip is defined
+
+- name: Handle block storage
+  vultr.cloud.block_storage:
+    name: "{{ block_storage.name }}"
+    attached_to_instance: "{{ res.vultr_instance.id if block_storage.name in vultr__instance_block_storages else omit }}"
+    size_gb: "{{ block_storage.size_gb | default(vultr__block_storage_default_size_gb) }}"
+    block_type: "{{ block_storage.block_type | default(vultr__block_storage_default_block_type) }}"
+    region: "{{ block_storage.region | default(vultr__region) }}"
+    state: "{{ block_storage.state | default(omit) }}"
+    api_key: "{{ vultr__api_key }}"
+    api_retries: "{{ vultr__api_retries }}"
+    api_retry_max_delay: "{{ vultr__api_retry_max_delay }}"
+    api_timeout: "{{ vultr__api_timeout }}"
+  register: result
+  retries: 5
+  delay: 3
+  until: result is not failed
+  with_items: "{{ vultr__block_storages }}"
+  loop_control:
+    label: "{{ block_storage.name }}"
+    loop_var: block_storage
