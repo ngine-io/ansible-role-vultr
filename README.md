@@ -6,10 +6,11 @@ Manages compute resources on [Vultr Cloud](https://www.vultr.com/).
 
 ## Role Variables
 
+See [defaults/main.yml](defaults/main.yml)
 
 ## Dependencies
 
-None
+See [requirements.txt](requirements.txt)
 
 ## Examples
 
@@ -33,7 +34,7 @@ A typical playbook would look like this.
       wait_for:
         host: "{{ ansible_host }}"
         port: 22
-        timeout: 60
+        timeout: 600
 ```
 
 ### Common Configurations
