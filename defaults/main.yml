@@ -1,0 +1,57 @@
+---
+vultr__api_key: "{{ omit }}"
+vultr__api_retries: "{{ omit }}"
+vultr__api_retry_max_delay: "{{ omit }}"
+vultr__api_timeout: "{{ omit }}"
+
+vultr__region: ewr
+
+vultr__firewall_groups:
+  - name: default
+    rules:
+      - port: "22"
+        cidr: "0.0.0.0/0"
+
+vultr__vpcs: []
+## Example
+# vultr__vpcs:
+#   - name: default
+#     cidr: "10.99.1.0/24"
+
+vultr__ssh_key_default_name: "{{ lookup('env', 'USER') }}@{{ lookup('pipe', 'hostname') }}"
+vultr__ssh_key_default_pubkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+vultr__ssh_keys:
+  - name: "{{ vultr__ssh_key_default_name }}"
+    pubkey: "{{ vultr__ssh_key_default_pubkey }}"
+
+vultr__block_storage_default_size_gb: 40
+vultr__block_storage_default_block_type: storage_opt
+vultr__block_storages: []
+## Example:
+# vultr__block_storages:
+#   - name: "{{ vultr__instance_name }}-disk1"
+#     size_gb: 10
+#     block_type: high_perf
+
+vultr__instance_name: "{{ inventory_hostname_short }}"
+vultr__instance_ssh_keys:
+  - "{{ vultr__ssh_key_default_name }}"
+vultr__instance_os: "{{ omit }}"
+vultr__instance_app: "{{ omit }}"
+vultr__instance_image: "{{ omit }}"
+vultr__instance_startup_script: "{{ omit }}"
+vultr__instance_user_data: "{{ omit }}"
+vultr__instance_tags: "{{ omit }}"
+vultr__instance_plan: "vc2-1c-1gb"
+vultr__instance_region: "{{ vultr__region }}"
+vultr__instance_firewall_group: "default"
+vultr__instance_hostname: "{{ vultr__instance_name }}"
+vultr__instance_state: started
+vultr__instance_vpcs: "{{ omit }}"
+vultr__instance_ddos_protection: "{{ omit }}"
+vultr__instance_backups: "{{ omit }}"
+vultr__instance_enable_ipv6: "{{ omit }}"
+vultr__instance_block_storages: []
+## Example:
+# vultr__instance_block_storages:
+#   - "{{ vultr__instance_name }}-disk1"
