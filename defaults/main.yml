@@ -39,6 +39,7 @@ vultr__instance_ssh_keys:
 vultr__instance_os: "{{ omit }}"
 vultr__instance_app: "{{ omit }}"
 vultr__instance_image: "{{ omit }}"
+vultr__instance_snapshot: "{{ omit }}"
 vultr__instance_startup_script: "{{ omit }}"
 vultr__instance_user_data: "{{ omit }}"
 vultr__instance_tags: "{{ omit }}"

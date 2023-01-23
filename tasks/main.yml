@@ -55,6 +55,7 @@
     os: "{{ vultr__instance_os }}"
     image: "{{ vultr__instance_image }}"
     app: "{{ vultr__instance_app }}"
+    snapshot: "{{ vultr__instance_snapshot }}"
     vpcs: "{{ vultr__instance_vpcs }}"
     state: "{{ vultr__instance_state }}"
     api_key: "{{ vultr__api_key }}"
