@@ -1,0 +1,4 @@
+---
+collections:
+  - name: vultr.cloud
+    version: 1.7.0

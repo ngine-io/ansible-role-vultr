@@ -6,11 +6,11 @@ Manages compute resources on [Vultr Cloud](https://www.vultr.com/).
 
 ## Role Variables
 
-See [defaults/main.yml](defaults/main.yml)
+See [defaults/main.yml](https://github.com/ngine-io/ansible-role-vultr/blob/main/defaults/main.yml)
 
 ## Dependencies
 
-See [requirements.txt](requirements.txt)
+See [requirements.txt](https://github.com/ngine-io/ansible-role-vultr/blob/main/requirements.txt) and [requirements.yml](https://github.com/ngine-io/ansible-role-vultr/blob/main/requirements.yml)
 
 ## Examples
 
